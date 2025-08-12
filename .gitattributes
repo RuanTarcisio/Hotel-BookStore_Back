@@ -1,0 +1,40 @@
+# ============================
+# Regras gerais
+# ============================
+
+# Usa LF como padrão para arquivos de texto
+* text=auto eol=lf
+
+# Scripts de shell sempre com LF
+*.sh text eol=lf
+
+# Scripts batch do Windows sempre com CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Arquivos Java e de configuração sempre com LF
+*.java text eol=lf
+*.xml text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.properties text eol=lf
+*.gradle text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+
+# ============================
+# Arquivos binários - nunca mudar
+# ============================
+*.jar binary
+*.war binary
+*.zip binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.class binary
+*.so binary
+*.dll binary
+*.exe binary
