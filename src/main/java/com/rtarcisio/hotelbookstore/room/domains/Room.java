@@ -23,6 +23,7 @@ public class Room {
     private String type;
     private int capacity;
     private Double price;
+    private String size;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")

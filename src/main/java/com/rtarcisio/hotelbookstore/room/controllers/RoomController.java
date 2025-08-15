@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Tag(name = "Rooms", description = "Endpoints para gerenciamento de quartos")
 @RestController
-@RequestMapping("/v1/rooms")
+@RequestMapping(value = {"/v1/rooms", "/v1/rooms/"})
 @RequiredArgsConstructor
 public class RoomController {
 
@@ -50,10 +51,16 @@ public class RoomController {
 
     @GetMapping("/{id}")
 //    @CacheControl(maxAge = 30, maxAgeUnit = TimeUnit.SECONDS)
-    public ResponseEntity<Room> getRoom(
+    public ResponseEntity<RoomDTO> getRoom(
             @Parameter(description = "ID do quarto", required = true, example = "1")
             @PathVariable Long id) {
         return ResponseEntity.ok().body(roomService.getRoom(id));
+    }
+
+    @GetMapping("")
+//    @CacheControl(maxAge = 30, maxAgeUnit = TimeUnit.SECONDS)
+    public ResponseEntity<List<RoomDTO>> getAllRoom() {
+        return ResponseEntity.ok().body(roomService.getRooms());
     }
 
     @GetMapping("/{id}/reservation/{id_reservation}")

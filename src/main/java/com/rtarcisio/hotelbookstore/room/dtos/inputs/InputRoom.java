@@ -20,6 +20,9 @@ public class InputRoom {
     @Min(value = 1, message = "Capacity must be at least 1")
     private int capacity;
 
+    @Min(value = 1, message = "Capacity must be at least 1")
+    private String size;
+
     @DecimalMin(value = "0.0", message = "Price must be positive")
     private Double price;
 

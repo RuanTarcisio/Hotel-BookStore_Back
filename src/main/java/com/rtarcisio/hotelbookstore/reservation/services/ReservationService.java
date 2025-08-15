@@ -8,6 +8,7 @@ import com.rtarcisio.hotelbookstore.room.dtos.inputs.InputRoom;
 import com.rtarcisio.hotelbookstore.room.mappers.RoomMapper;
 import com.rtarcisio.hotelbookstore.room.repositories.ImageRepository;
 import com.rtarcisio.hotelbookstore.room.repositories.RoomRepository;
+import com.rtarcisio.hotelbookstore.room.services.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

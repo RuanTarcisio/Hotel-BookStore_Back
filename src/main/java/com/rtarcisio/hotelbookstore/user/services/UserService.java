@@ -1,17 +1,27 @@
 package com.rtarcisio.hotelbookstore.user.services;
 
-
+import com.rtarcisio.hotelbookstore.shared.dtos.UserDTO;
+import com.rtarcisio.hotelbookstore.shared.dtos.UserOAuthDTO;
+import com.rtarcisio.hotelbookstore.user.domains.User;
+import com.rtarcisio.hotelbookstore.user.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-
 @Service
 @RequiredArgsConstructor
-public class ClienteService {
+public class UserService {
 
-//    private final UserRepository repository;
-//    private final ConnectedAccountRepository connectedAccountRepository;
-//
+    private final UserRepository repository;
+
+    public void registerUser(UserDTO dto){
+
+    }
+
+    public void registerUser(UserOAuthDTO dto){
+        User user = new User(dto.userAuthId(), dto.name(), dto.profileImageUrl());
+        repository.save(user);
+    }
+
 //    private final PasswordEncoder passwordEncoder;
 ////    @Value("${app.base-url}")
 ////    private String baseUrl;

@@ -1,6 +1,7 @@
 package com.rtarcisio.hotelbookstore.room.services;
 
 
+import com.rtarcisio.hotelbookstore.reservation.services.ReservationService;
 import com.rtarcisio.hotelbookstore.room.domains.Image;
 import com.rtarcisio.hotelbookstore.room.domains.Room;
 import com.rtarcisio.hotelbookstore.room.dtos.RoomDTO;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -24,16 +26,21 @@ public class RoomService {
 
     private final RoomRepository roomRepository;
     private final ImageRepository imageRepository;
+    private final ReservationService reservationService;
 
     @Value("${api.url}")
     private String apiUrl;
 
-    public Room getRoom(Long id) {
-        return roomRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public RoomDTO getRoom(Long id) {
+        Room room = roomRepository.findById(id).orElseThrow(NoSuchElementException::new);
+        return RoomDTO.fromRoom(room);
     }
 
-    public List<Room> getRooms() {
-        return roomRepository.findAll();
+    public List<RoomDTO> getRooms() {
+        List<Room> rooms = roomRepository.findAll();
+        return rooms.stream()
+                .map(RoomDTO::fromRoom)
+                .toList();
     }
 
     @Transactional(readOnly = true)
