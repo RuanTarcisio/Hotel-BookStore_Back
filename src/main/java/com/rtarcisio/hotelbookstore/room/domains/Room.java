@@ -24,11 +24,11 @@ public class Room {
     private Double price;
     private String size;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private ImageRoom imageRoom;
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "image_id")
+//    private ImageRoom imageRoom;
 
-    private String urlImage;
+    private String urlImageRoom;
 
     @ElementCollection
     @CollectionTable(name = "room_reservations", joinColumns = @JoinColumn(name = "room_id"))

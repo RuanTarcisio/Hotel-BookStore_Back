@@ -1,42 +1,51 @@
 package com.rtarcisio.hotelbookstore.storage.validations;
 
 import com.rtarcisio.hotelbookstore.storage.dtos.inputs.ImageUploadInput;
+import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
+import com.rtarcisio.hotelbookstore.storage.enums.OwnerType;
 import com.rtarcisio.hotelbookstore.storage.validations.ImageValidationRules.ValidationRule;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Optional;
+
 import static com.rtarcisio.hotelbookstore.storage.validations.ImageValidationRules.getRule;
 
 public class FileInputValidator implements ConstraintValidator<FileInput, ImageUploadInput> {
 
+    private boolean hasError;
     private boolean required;
-
-    @Override
-    public void initialize(FileInput constraint) {
-        this.required = constraint.required();
-    }
 
     @Override
     public boolean isValid(ImageUploadInput input, ConstraintValidatorContext context) {
         if (input == null) {
             return !required;
         }
-        ValidationRule rule = getRule(
-                input.getImageType(),
-                input.getOwnerType()
-        );
-
+        Optional<ImageType> imageType = ImageType.fromString(input.getImageType());
+        Optional<OwnerType> ownerType = OwnerType.fromString(input.getOwnerType());
         MultipartFile file = input.getFile();
 
-        if (rule.required() && (file == null || file.isEmpty())) {
+        if (imageType.isEmpty()) {
+            addConstraintViolation(context, "ImageType invalido", "imageType");
+            hasError = true;
+        }
+        if (ownerType.isEmpty()) {
+            addConstraintViolation(context, "OwnerType invalido", "ownerType");
+            hasError = true;
+        }
+        if ((file == null || file.isEmpty())) {
             addConstraintViolation(context, "Arquivo é obrigatório", "file");
+            hasError = true;
+        }
+        if(hasError){
             return false;
         }
-
-        if (file == null || file.isEmpty()) {
-            return true;
-        }
+        // ✅ Obtém regras baseadas no contexto
+        ValidationRule rule = getRule(
+                imageType.get(),
+                ownerType.get()
+        );
 
         // Validação de content type
         if (!rule.allowedContentTypes().contains(file.getContentType())) {

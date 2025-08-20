@@ -7,8 +7,8 @@ import com.rtarcisio.hotelbookstore.room.domains.Room;
 import com.rtarcisio.hotelbookstore.room.dtos.RoomDTO;
 import com.rtarcisio.hotelbookstore.room.dtos.inputs.InputRoom;
 import com.rtarcisio.hotelbookstore.room.mappers.RoomMapper;
-import com.rtarcisio.hotelbookstore.room.repositories.ImageRoomRepository;
 import com.rtarcisio.hotelbookstore.room.repositories.RoomRepository;
+import com.rtarcisio.hotelbookstore.storage.services.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ import java.util.Optional;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final ImageRoomRepository imageRoomRepository;
+    private final ImageService imageService;
     private final ReservationService reservationService;
 
     @Value("${app.base-url}")
@@ -45,14 +45,14 @@ public class RoomService {
     @Transactional(readOnly = true)
     public Optional<ImageRoom> getImageById(String id) {
 
-        return imageRoomRepository.findById(id);
+        return null;//imageRoomRepository.findById(id);
     }
 
     public RoomDTO save(InputRoom dto) {
         Room room = RoomMapper.inputToRoom(dto);
 
-        if (room.getImageRoom() != null) {
-            room.getImageRoom().setRoom(room); // garante bidirecional
+        if (dto.getRoomImage() != null) {
+            imageService.uploadImage(dto.getRoomImage())
         }
 
         room = roomRepository.save(room);

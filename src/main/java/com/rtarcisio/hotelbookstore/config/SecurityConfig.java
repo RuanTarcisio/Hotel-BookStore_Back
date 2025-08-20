@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
@@ -62,8 +61,6 @@ public class SecurityConfig {
                             "/webjars/**"
                     ).permitAll();
 
-                    auth.requestMatchers(HttpMethod.GET, "/v1/images/**").permitAll();
-                    auth.requestMatchers(HttpMethod.POST, "/v1/images").authenticated();
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> oauth2

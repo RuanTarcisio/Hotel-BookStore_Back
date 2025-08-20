@@ -1,6 +1,7 @@
 package com.rtarcisio.hotelbookstore.storage.mappers;
 
 import com.rtarcisio.hotelbookstore.storage.domains.Image;
+import com.rtarcisio.hotelbookstore.storage.dtos.inputs.ImageResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,5 +34,9 @@ public class ImageMapper {
 //        image.setExtension(extension);
 
         return image;
+    }
+
+    public static ImageResponse toResponse(Image image) {
+        return new ImageResponse(image.getId(), image.getOwnerType().name(), image.getOwnerId(), image.getImageType().name(), image.getExtension().name(), image.getStoragePath());
     }
 }

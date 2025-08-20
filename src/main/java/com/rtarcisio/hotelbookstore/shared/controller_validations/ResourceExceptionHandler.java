@@ -17,13 +17,22 @@ import java.io.IOException;
 @ControllerAdvice
 public class ResourceExceptionHandler {
 
-//	@ExceptionHandler(AccessDeniedException.class)
+    //	@ExceptionHandler(AccessDeniedException.class)
 //	public ResponseEntity<StandardError> accessDenied(AccessDeniedException e, HttpServletRequest request) {
 //
 //		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), "ERRO_USUARIO_SEM_PERMISSAO");
 //
 //		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 //	}
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
+        // Você pode inspecionar a mensagem da exceção para ser mais específico
+        // Mas para este caso, uma mensagem genérica já ajuda
+        if (ex.getMessage() != null && ex.getMessage().contains("enum")) {
+            return new ResponseEntity<>("Valor inválido para um dos tipos de enum.", HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<StandardError> handleNotFound(NoHandlerFoundException e, HttpServletRequest request) {
@@ -31,22 +40,22 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-	@ExceptionHandler(AuthenticationException.class)
-	public ResponseEntity<StandardError> authenticationFailure(AuthenticationException e, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<StandardError> authenticationFailure(AuthenticationException e, HttpServletRequest request) {
 
-		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
+        StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 
 
-	@ExceptionHandler(ConflictException.class)
-	public ResponseEntity<StandardError> conflict(ConflictException e, HttpServletRequest request) {
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<StandardError> conflict(ConflictException e, HttpServletRequest request) {
 
-		StandardError error = new StandardError(HttpStatus.CONFLICT.value(), e.getMessage());
+        StandardError error = new StandardError(HttpStatus.CONFLICT.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
 
 //	@ExceptionHandler(ExpiredJwtException.class)
 //	public ResponseEntity<StandardError> accessDenied(ExpiredJwtException e, HttpServletRequest request) {
@@ -56,96 +65,97 @@ public class ResourceExceptionHandler {
 //		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 //	}
 
-	@ExceptionHandler(IOException.class)
-	public ResponseEntity<StandardError> _IOException(IOException e, HttpServletRequest request) {
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<StandardError> _IOException(IOException e, HttpServletRequest request) {
 
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), "Parametro invalido");
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), "Parametro invalido");
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
-	@ExceptionHandler(MailSendException.class)
-	public ResponseEntity<StandardError> emailError(MailSendException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    @ExceptionHandler(MailSendException.class)
+    public ResponseEntity<StandardError> emailError(MailSendException e, HttpServletRequest request) {
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(MyMalformedURLException.class)
-	public ResponseEntity<StandardError> urlIncorreta(MyMalformedURLException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
+    @ExceptionHandler(MyMalformedURLException.class)
+    public ResponseEntity<StandardError> urlIncorreta(MyMalformedURLException e, HttpServletRequest request) {
 
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-	}
+        StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
 
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<StandardError> methodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
-		ValidationError error = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de validação.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 
-		for (FieldError x : e.getBindingResult().getFieldErrors()) {
-			error.addError(x.getField(), x.getDefaultMessage());
-		}
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<StandardError> methodArgumentNotValidException(MethodArgumentNotValidException e, HttpServletRequest request) {
+        ValidationError error = new ValidationError(HttpStatus.BAD_REQUEST.value(), "Erro de validação.");
 
-	@ExceptionHandler(ResponseStatusException.class)
-	public ResponseEntity<StandardError> response(ResponseStatusException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        for (FieldError x : e.getBindingResult().getFieldErrors()) {
+            error.addError(x.getField(), x.getDefaultMessage());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<StandardError> response(ResponseStatusException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(DataIntegrityException.class)
-	public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(InvalidTokenException.class)
-	public ResponseEntity<StandardError> invalidToken(InvalidTokenException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<StandardError> invalidToken(InvalidTokenException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(DataInvalidaException.class)
-	public ResponseEntity<StandardError> dataValidation(DataInvalidaException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    @ExceptionHandler(DataInvalidaException.class)
+    public ResponseEntity<StandardError> dataValidation(DataInvalidaException e, HttpServletRequest request) {
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(UsuarioNaoEncontradoException.class)
-	public ResponseEntity<StandardError> notFound(UsuarioNaoEncontradoException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-	}
+    @ExceptionHandler(UsuarioNaoEncontradoException.class)
+    public ResponseEntity<StandardError> notFound(UsuarioNaoEncontradoException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage());
 
-	@ExceptionHandler(ObjetoJaCadastradoException.class)
-	public ResponseEntity<StandardError> jaCadastrado(ObjetoJaCadastradoException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    @ExceptionHandler(ObjetoJaCadastradoException.class)
+    public ResponseEntity<StandardError> jaCadastrado(ObjetoJaCadastradoException e, HttpServletRequest request) {
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-	@ExceptionHandler(ObjetoNaoEncontradoException.class)
-	public ResponseEntity<StandardError> notFound(ObjetoNaoEncontradoException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage());
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
-	@ExceptionHandler(DadosProtegidosException.class)
-	public ResponseEntity<StandardError> handleDadosProtegidosException(DadosProtegidosException e,
-			HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
+    @ExceptionHandler(ObjetoNaoEncontradoException.class)
+    public ResponseEntity<StandardError> notFound(ObjetoNaoEncontradoException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
 
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
-	}
+    @ExceptionHandler(DadosProtegidosException.class)
+    public ResponseEntity<StandardError> handleDadosProtegidosException(DadosProtegidosException e,
+                                                                        HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
 
 //	@ExceptionHandler(BadCredentialsException.class)
 //	public ResponseEntity<StandardError> credenciaisErradas(BadCredentialsException e, HttpServletRequest request) {
@@ -154,13 +164,13 @@ public class ResourceExceptionHandler {
 //		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 //	}
 
-	@ExceptionHandler(DadoInvalidoException.class)
-	public ResponseEntity<StandardError> dadoInvalido(DadoInvalidoException e, HttpServletRequest request) {
+    @ExceptionHandler(DadoInvalidoException.class)
+    public ResponseEntity<StandardError> dadoInvalido(DadoInvalidoException e, HttpServletRequest request) {
 
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
-	}
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
 //	@ExceptionHandler(DisabledException.class)
 //	public ResponseEntity<StandardError> loginInativo(DisabledException e, HttpServletRequest request) {
@@ -170,39 +180,39 @@ public class ResourceExceptionHandler {
 //
 //	}
 
-	@ExceptionHandler(EnvioDeEmailException.class)
-	public ResponseEntity<StandardError> envioDeEmailException(EnvioDeEmailException e, HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_GATEWAY.value(), e.getMessage());
+    @ExceptionHandler(EnvioDeEmailException.class)
+    public ResponseEntity<StandardError> envioDeEmailException(EnvioDeEmailException e, HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_GATEWAY.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(error);
 
-	}
+    }
 
-	@ExceptionHandler(UsuarioInvalidoException.class)
-	public ResponseEntity<StandardError> usuarioInvalidoException(UsuarioInvalidoException e,
-			HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
+    @ExceptionHandler(UsuarioInvalidoException.class)
+    public ResponseEntity<StandardError> usuarioInvalidoException(UsuarioInvalidoException e,
+                                                                  HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
 
-	}
+    }
 
-	@ExceptionHandler(ObjetoNaoRemovidoException.class)
-	public ResponseEntity<StandardError> objetoNaoRemovidoException(ObjetoNaoRemovidoException e,
+    @ExceptionHandler(ObjetoNaoRemovidoException.class)
+    public ResponseEntity<StandardError> objetoNaoRemovidoException(ObjetoNaoRemovidoException e,
                                                                     HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 
-	}
+    }
 
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<StandardError> campoMalFormadoException(HttpMessageNotReadableException e,
-			HttpServletRequest request) {
-		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<StandardError> campoMalFormadoException(HttpMessageNotReadableException e,
+                                                                  HttpServletRequest request) {
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
 
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
 
-	}
+    }
 
 }

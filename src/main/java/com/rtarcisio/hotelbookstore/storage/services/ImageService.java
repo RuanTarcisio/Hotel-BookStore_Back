@@ -1,11 +1,14 @@
 package com.rtarcisio.hotelbookstore.storage.services;
 
+import com.rtarcisio.hotelbookstore.shared.exceptions.ImageNotFoundException;
 import com.rtarcisio.hotelbookstore.storage.domains.Image;
+import com.rtarcisio.hotelbookstore.storage.dtos.inputs.ImageUploadInput;
 import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
 import com.rtarcisio.hotelbookstore.storage.enums.MediaTypeExtension;
 import com.rtarcisio.hotelbookstore.storage.enums.OwnerType;
 import com.rtarcisio.hotelbookstore.storage.repositories.ImageRepository;
 import com.rtarcisio.hotelbookstore.storage.validations.MediaTypeValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -25,19 +28,11 @@ public class ImageService {
     public Image uploadImage(MultipartFile file, OwnerType ownerType,
                              String ownerId, ImageType imageType) {
 
-        // 1. Validações iniciais
-        if (file == null || file.isEmpty()) {
-            throw new RuntimeException("Arquivo vazio");
-        }
-
-        // 2. Validação de tipo de mídia
         MediaType contentType = MediaType.valueOf(file.getContentType());
         mediaTypeValidator.validateForImageType(contentType, imageType);
 
-        // 3. Salvar arquivo
         String storagePath = storageService.storeFile(file, ownerType, ownerId, imageType);
 
-        // 4. Criar metadados
         MediaTypeExtension mediaTypeExt = MediaTypeExtension.fromMediaType(contentType)
                 .orElseThrow(); // Já validado acima, não deveria falhar
 
@@ -68,38 +63,46 @@ public class ImageService {
         }
     }
 
+    public Image uploadImage(@Valid ImageUploadInput input) {
 
-//    public Image uploadImage(MultipartFile file, String ownerType,
-//                             String ownerId, String imageType) {
-//        if (file.isEmpty()) {
-//            throw new RuntimeException("Arquivo vazio");
-//        }
-//
-//        Image image = new Image();
-//        try {
-//            image.setFile(file.getBytes());
-//            image.setSize(file.getSize());
-//            image.setOriginalFilename(file.getOriginalFilename());
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        image.setCreatedAt(LocalDateTime.now());
-//        image.setOwnerType(ownerType);
-//        image.setOwnerId(ownerId);
-//        image.setImageType(imageType);
-//
-//        MediaType contentType = MediaType.valueOf(file.getContentType());
-//        ImageExtension extension = ImageExtension.valueOf(contentType);
-//
-//        if (extension == null) {
-//            throw new IllegalArgumentException("Tipo de arquivo não suportado: " + contentType);
-//        }
-//        image.setExtension(extension);
-//        image.setStoragePath();
-//        imageRepository.save(image);
-//
-//        return imageRepository.save(image);
-//    }
+        MediaType contentType = MediaType.valueOf(input.getFile().getContentType());
+        ImageType imageType = ImageType.valueOf(input.getImageType());
+        OwnerType ownerType = OwnerType.valueOf(input.getOwnerType());
+        MultipartFile file = input.getFile();
+        String ownerId = input.getOwnerId();
+        mediaTypeValidator.validateForImageType(contentType, imageType);
 
+        String storagePath = storageService.storeFile(file, ownerType, ownerId, imageType);
+
+        MediaTypeExtension mediaTypeExt = MediaTypeExtension.fromMediaType(contentType)
+                .orElseThrow(); // Já validado acima, não deveria falhar
+
+        Image image = new Image();
+        image.setOwnerType(ownerType);
+        image.setOwnerId(ownerId);
+        image.setImageType(imageType);
+        image.setOriginalFilename(file.getOriginalFilename());
+        image.setSize(file.getSize());
+        image.setStoragePath(storagePath);
+        image.setCreatedAt(LocalDateTime.now());
+        image.setExtension(mediaTypeExt); // ✅ Usando MediaTypeExtension diretamente
+
+        return imageRepository.save(image);
+    }
+
+
+    public Image getImageMetadata(String imageId) {
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new ImageNotFoundException("Imagem não encontrada: " + imageId));
+    }
+
+    public Image getImageMetadata(String ownerType, String ownerId, String imageType) {
+        return imageRepository.findByOwnerTypeAndOwnerIdAndImageType(
+                OwnerType.valueOf(ownerType),
+                ownerId,
+                ImageType.valueOf(imageType)
+        ).orElseThrow(() -> new ImageNotFoundException(
+                "Imagem não encontrada para: " + ownerType + "/" + ownerId + "/" + imageType
+        ));
+    }
 }
