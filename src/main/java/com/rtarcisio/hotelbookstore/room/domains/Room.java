@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class Room {
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
-    private Image imageRoom;
+    private ImageRoom imageRoom;
 
     private String urlImage;
 

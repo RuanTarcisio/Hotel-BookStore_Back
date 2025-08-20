@@ -7,17 +7,18 @@ import com.rtarcisio.hotelbookstore.auth.dtos.inputs.InputUserRegister;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 @RequiredArgsConstructor
-public class UserMapper {
+public class AuthUserMapper {
 
     public static AuthUser inputToAuthUser(InputUserRegister input) {
 
         AuthUser authUser = new AuthUser();
-        authUser.setCpf(input.getCpf());
         authUser.setEmail(input.getEmail());
         authUser.setPassword(input.getPassword());
-        authUser.setFullyRegistered(false);
+        authUser.setCreatedAt(LocalDateTime.now());
 
         return authUser;
     }

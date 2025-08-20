@@ -11,7 +11,8 @@ public record UserDTO(
         String name,
         @Schema(description = "E-mail do usuário", example = "ruan@example.com")
         String email,
-        @Schema(description = "CPF usuário", example = "12343212311")
-        String cpf, @JsonFormat(pattern = "dd/MM/yyyy" ) LocalDate birthdate) {
+        @Schema(description = "Url da foto", example = ".../v1/users/profile/photo")
+        String urlImage, @JsonFormat(pattern = "dd/MM/yyyy" )
+        LocalDate birthdate) {
 
 }

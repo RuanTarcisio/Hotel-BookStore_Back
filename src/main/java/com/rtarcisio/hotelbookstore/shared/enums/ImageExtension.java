@@ -1,4 +1,4 @@
-package com.rtarcisio.hotelbookstore.room.domains.enums;
+package com.rtarcisio.hotelbookstore.shared.enums;
 
 import lombok.Getter;
 import org.springframework.http.MediaType;

@@ -17,27 +17,24 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String userId;
     private String authUserId;
 
-//    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-//    private ImageUser imageUser;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "image_id")
+    private ImageUser imageUser;
 
     private String profileImageUrl;
     @Column
     private String name;
     @Column(unique = true)
     private String cpf;
+    private String email;
     private LocalDate birthdate;
     @Column(name = "created_At")
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy hh:ss")
     private LocalDateTime createdAt;
 
-    public User(String authUserId, String name, String profileImageUrl) {
-        this.authUserId = authUserId;
-        this.profileImageUrl = profileImageUrl;
-        this.name = name;
-    }
 }

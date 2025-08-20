@@ -24,6 +24,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RequestMapping("/v1/auth")
@@ -47,7 +49,7 @@ public class AuthController {
         AuthUser authUser = authService.registerUser(input);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
-                .buildAndExpand(authUser.getUserId())
+                .buildAndExpand(authUser.getAuthUserId())
                 .toUri();
         return ResponseEntity.created(uri).build();
     }
@@ -62,20 +64,19 @@ public class AuthController {
     public ResponseEntity<?> checkSession(
             @Parameter(hidden = true) @AuthenticationPrincipal AuthUser user,
             HttpServletResponse response) {
-//        if (user == null) {
-//
-//            var expiredCookie = authHandlerUtil.expiredSession();
-//            response.addHeader("Set-Cookie", expiredCookie);
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-//        }
-//
-//        Map<String, Object> object = new HashMap<>();
-//        object.put("id", user.getId());
-//        object.put("email", user.getEmail());
-//        object.put("name", user.getName());
+        if (user == null) {
+            response.addHeader("Set-Cookie", authHandlerUtil.expiredSession());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Map<String, Object> object = new HashMap<>();
+        object.put("id", user.getAuthUserId());
+        object.put("email", user.getEmail());
+        object.put("name", user.getEmail());
+        object.put("roles", user.getAuthorities());
 //        object.put("profileImage", user.getProfileImageUrl());
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(object);
     }
 
     @Operation(summary = "Autenticar usuário", description = "Realiza o login do usuário e seta o cookie de sessão")

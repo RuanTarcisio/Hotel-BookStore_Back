@@ -2,19 +2,18 @@ package com.rtarcisio.hotelbookstore.room.services;
 
 
 import com.rtarcisio.hotelbookstore.reservation.services.ReservationService;
-import com.rtarcisio.hotelbookstore.room.domains.Image;
+import com.rtarcisio.hotelbookstore.room.domains.ImageRoom;
 import com.rtarcisio.hotelbookstore.room.domains.Room;
 import com.rtarcisio.hotelbookstore.room.dtos.RoomDTO;
 import com.rtarcisio.hotelbookstore.room.dtos.inputs.InputRoom;
 import com.rtarcisio.hotelbookstore.room.mappers.RoomMapper;
-import com.rtarcisio.hotelbookstore.room.repositories.ImageRepository;
+import com.rtarcisio.hotelbookstore.room.repositories.ImageRoomRepository;
 import com.rtarcisio.hotelbookstore.room.repositories.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,10 +24,10 @@ import java.util.Optional;
 public class RoomService {
 
     private final RoomRepository roomRepository;
-    private final ImageRepository imageRepository;
+    private final ImageRoomRepository imageRoomRepository;
     private final ReservationService reservationService;
 
-    @Value("${api.url}")
+    @Value("${app.base-url}")
     private String apiUrl;
 
     public RoomDTO getRoom(Long id) {
@@ -44,8 +43,9 @@ public class RoomService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Image> getImageById(String id) {
-        return imageRepository.findById(id);
+    public Optional<ImageRoom> getImageById(String id) {
+
+        return imageRoomRepository.findById(id);
     }
 
     public RoomDTO save(InputRoom dto) {

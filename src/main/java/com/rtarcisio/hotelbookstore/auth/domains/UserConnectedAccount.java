@@ -1,5 +1,6 @@
 package com.rtarcisio.hotelbookstore.auth.domains;
 
+import com.rtarcisio.hotelbookstore.auth.enums.ProviderEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,8 @@ public class UserConnectedAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String provider;
+    @Enumerated(EnumType.STRING)
+    private ProviderEnum provider;
     private String providerId;
     private LocalDateTime connectedAt;
 
@@ -21,7 +23,7 @@ public class UserConnectedAccount {
     @JoinColumn(name = "user_id")
     private AuthUser authUser;
 
-    public UserConnectedAccount(String provider, String providerId, AuthUser user) {
+    public UserConnectedAccount(ProviderEnum provider, String providerId, AuthUser user) {
         this.provider = provider;
         this.providerId = providerId;
         this.connectedAt = LocalDateTime.now();

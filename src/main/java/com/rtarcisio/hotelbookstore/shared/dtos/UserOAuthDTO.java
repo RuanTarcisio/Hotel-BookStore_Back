@@ -8,6 +8,8 @@ public record UserOAuthDTO(
         @Schema(description = "Nome completo", example = "Ruan Tarcísio")
         String name,
         @Schema(description = "E-mail do usuário", example = "ruan@example.com")
+        String email,
+        @Schema(description = "Foto do usuário", example = "")
         String profileImageUrl) {
 
 }

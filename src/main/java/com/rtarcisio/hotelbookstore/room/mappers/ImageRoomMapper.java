@@ -1,7 +1,7 @@
 package com.rtarcisio.hotelbookstore.room.mappers;
 
-import com.rtarcisio.hotelbookstore.room.domains.Image;
-import com.rtarcisio.hotelbookstore.room.domains.enums.ImageExtension;
+import com.rtarcisio.hotelbookstore.room.domains.ImageRoom;
+import com.rtarcisio.hotelbookstore.shared.enums.ImageExtension;
 import com.rtarcisio.hotelbookstore.room.dtos.ImageDTO;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -15,10 +15,10 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 @Component
-public class ImageMapper {
+public class ImageRoomMapper {
 
-    public static Image mapToImage(MultipartFile file)   {
-        Image image = new Image();
+    public static ImageRoom mapToImage(MultipartFile file)   {
+        ImageRoom image = new ImageRoom();
         image.setSize(file.getSize());
 
         try {
@@ -54,7 +54,7 @@ public class ImageMapper {
 //        return image;
 //    }
 
-    public static ImageDTO imageToDTO(Image image, String url) {
+    public static ImageDTO imageToDTO(ImageRoom image, String url) {
         return ImageDTO.builder()
                 .url(url)
                 .extension(image.getExtension().name())

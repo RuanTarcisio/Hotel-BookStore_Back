@@ -1,4 +1,4 @@
-package com.rtarcisio.hotelbookstore.room.dtos.inputs;
+package com.rtarcisio.hotelbookstore.user.dtos.inputs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;

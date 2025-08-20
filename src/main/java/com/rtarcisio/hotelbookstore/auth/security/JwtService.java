@@ -33,7 +33,7 @@ public class JwtService {
 
         String token = Jwts.builder()
                 .claims(claims)
-                .subject(user.getUserId())
+                .subject(user.getAuthUserId())
                 .expiration(expirationDate)
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
@@ -60,14 +60,14 @@ public class JwtService {
         return claims;
     }
 
-    public Long getIdFromToken(String tokenJwt) {
+    public String getIdFromToken(String tokenJwt) {
 
         try {
             JwtParser build = Jwts.parser().verifyWith(keyGenerator.getKey()).build();
 
             Jws<Claims> jwsClaims = build.parseSignedClaims(tokenJwt);
             Claims claims = jwsClaims.getPayload();
-            return Long.parseLong(claims.getSubject());
+            return claims.getSubject();
         } catch (JwtException e) {
             throw new InvalidTokenException(e.getMessage());
         }

@@ -33,13 +33,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (token != null) {
             try {
-                Long id = jwtService.getIdFromToken(token);
+                String id = jwtService.getIdFromToken(token);
                 AuthUser user = authUserRepository.findById(id)
                         .orElseThrow(() -> new InvalidTokenException("Usuário não encontrado"));
                 authHandlerUtil.setSpringAuthentication(user);
             } catch (Exception e) {
                 log.warn("Token inválido ou expirado: {}", e.getMessage());
-
+                response.addHeader("Set-Cookie", authHandlerUtil.expiredSession());
             }
         }
 

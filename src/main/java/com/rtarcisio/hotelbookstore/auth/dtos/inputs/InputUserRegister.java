@@ -17,6 +17,9 @@ public class InputUserRegister{
     private String email;
     @NotBlank
     private String password;
+    @NotBlank
+    private String matchPassword;
+    private String phoneNumber;
     @CPF
     private String cpf;
     @JsonFormat(pattern = "dd/MM/yyyy" )

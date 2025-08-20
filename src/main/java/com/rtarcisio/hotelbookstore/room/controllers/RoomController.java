@@ -1,7 +1,7 @@
 package com.rtarcisio.hotelbookstore.room.controllers;
 
 
-import com.rtarcisio.hotelbookstore.room.domains.Image;
+import com.rtarcisio.hotelbookstore.room.domains.ImageRoom;
 import com.rtarcisio.hotelbookstore.room.domains.Room;
 import com.rtarcisio.hotelbookstore.room.dtos.RoomDTO;
 import com.rtarcisio.hotelbookstore.room.dtos.inputs.InputRoom;
@@ -83,12 +83,12 @@ public class RoomController {
     public ResponseEntity<byte[]> find(
             @Parameter(description = "ID do room") @PathVariable String id, @Parameter(description = "ID do room") @PathVariable String id_photo) {
 
-        Optional<Image> possibleImage = roomService.getImageById(id_photo);
+        Optional<ImageRoom> possibleImage = roomService.getImageById(id_photo);
         if (possibleImage.isEmpty() || possibleImage.get().getFile() == null) {
             return ResponseEntity.notFound().build();
         }
 
-        Image image = possibleImage.get();
+        ImageRoom image = possibleImage.get();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(image.getExtension().getMediaType());
         headers.setContentLength(image.getSize());
