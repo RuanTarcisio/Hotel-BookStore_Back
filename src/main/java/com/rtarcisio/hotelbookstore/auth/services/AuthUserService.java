@@ -7,10 +7,6 @@ import com.rtarcisio.hotelbookstore.auth.repositories.AuthUserRepository;
 import com.rtarcisio.hotelbookstore.auth.security.AuthHandlerUtil;
 import com.rtarcisio.hotelbookstore.shared.events.UserRegisteredEvent;
 import com.rtarcisio.hotelbookstore.shared.exceptions.UsuarioNaoEncontradoException;
-import com.rtarcisio.hotelbookstore.shared.mappers.ImageMapper;
-import com.rtarcisio.hotelbookstore.shared.models.AbstractImage;
-import com.rtarcisio.hotelbookstore.shared.models.Image;
-import com.rtarcisio.hotelbookstore.user.services.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -62,9 +58,9 @@ public class AuthUserService {
                 authUser.getEmail(),
                 input.getName(),
                 input.getCpf(),
-                input.getBirthdate(),
-                input.getProfileImage()
-        ));
+                input.getBirthdate()));
+//                input.getProfileImage()));
+
 
         return authUser;
 //        UserDTO dto = UserMapper.inputUserRegisterToUserDTO(input);

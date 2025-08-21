@@ -18,7 +18,7 @@ public record RoomDTO (Long roomId,
                 room.getTitle(),
                 room.getDescription(),
                 room.getType(),
-                room.getUrlImage(),
+                room.getUrlImageRoom(),
                 room.getCapacity(),
                 room.getPrice(),
                 room.getSize());

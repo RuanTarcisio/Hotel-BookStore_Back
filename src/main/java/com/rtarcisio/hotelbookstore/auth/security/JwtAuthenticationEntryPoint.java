@@ -32,6 +32,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         Map<String, Object> body = Map.of(
                 "error", "Unauthorized",
+                "status", 401,
                 "message", authException.getMessage(),
                 "path", request.getRequestURI(),
                 "timestamp", Instant.now().toString()

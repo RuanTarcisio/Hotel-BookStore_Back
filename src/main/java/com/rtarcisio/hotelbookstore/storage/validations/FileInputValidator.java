@@ -1,16 +1,16 @@
 package com.rtarcisio.hotelbookstore.storage.validations;
 
-import com.rtarcisio.hotelbookstore.storage.dtos.inputs.ImageUploadInput;
+import com.rtarcisio.hotelbookstore.shared.dtos.ImageUploadInput;
 import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
 import com.rtarcisio.hotelbookstore.storage.enums.OwnerType;
-import com.rtarcisio.hotelbookstore.storage.validations.ImageValidationRules.ValidationRule;
+import com.rtarcisio.hotelbookstore.storage.validations.images.ImageValidationRules.ValidationRule;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-import static com.rtarcisio.hotelbookstore.storage.validations.ImageValidationRules.getRule;
+import static com.rtarcisio.hotelbookstore.storage.validations.images.ImageValidationRules.getRule;
 
 public class FileInputValidator implements ConstraintValidator<FileInput, ImageUploadInput> {
 

@@ -48,6 +48,13 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<StandardError> validationFailure(ValidationException e, HttpServletRequest request) {
+
+        StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 
     @ExceptionHandler(ConflictException.class)
     public ResponseEntity<StandardError> conflict(ConflictException e, HttpServletRequest request) {

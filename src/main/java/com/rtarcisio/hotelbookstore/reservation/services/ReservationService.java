@@ -6,7 +6,6 @@ import com.rtarcisio.hotelbookstore.room.domains.Room;
 import com.rtarcisio.hotelbookstore.room.dtos.RoomDTO;
 import com.rtarcisio.hotelbookstore.room.dtos.inputs.InputRoom;
 import com.rtarcisio.hotelbookstore.room.mappers.RoomMapper;
-import com.rtarcisio.hotelbookstore.room.repositories.ImageRoomRepository;
 import com.rtarcisio.hotelbookstore.room.repositories.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.util.Optional;
 public class ReservationService {
 
     private final RoomRepository roomRepository;
-    private final ImageRoomRepository imageRoomRepository;
 
     public Room getRoom(Long id) {
         return roomRepository.findById(id).orElseThrow(NoSuchElementException::new);
@@ -32,7 +30,7 @@ public class ReservationService {
     }
 
     public Optional<ImageRoom> getImageById(String id) {
-        return imageRoomRepository.findById(id);
+        return null;  //imageRoomRepository.findById(id);
 
     }
 

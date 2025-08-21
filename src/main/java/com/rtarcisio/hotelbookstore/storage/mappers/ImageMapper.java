@@ -37,6 +37,6 @@ public class ImageMapper {
     }
 
     public static ImageResponse toResponse(Image image) {
-        return new ImageResponse(image.getId(), image.getOwnerType().name(), image.getOwnerId(), image.getImageType().name(), image.getExtension().name(), image.getStoragePath());
+        return new ImageResponse(image.getId(), image.getOwnerType().name(), image.getOwnerId(), image.getImageType().name(), image.getExtension().name(), image.getStoragePath(), image.getImgUrl());
     }
 }

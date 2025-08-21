@@ -18,7 +18,7 @@ public class RoomMapper {
         room.setTitle(input.getTitle());
         room.setType(input.getType());
         room.setSize(input.getSize());
-        room.setImageRoom(ImageRoomMapper.mapToImage(input.getRoomImage()));
+//        room.setImageRoom(ImageRoomMapper.mapToImage(input.getRoomImage()));
 
         return room;
     }

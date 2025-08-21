@@ -60,7 +60,7 @@ public class SecurityConfig {
                             "/swagger-resources/**",
                             "/webjars/**"
                     ).permitAll();
-
+                    auth.requestMatchers("v1/images/upload").authenticated();
                     auth.anyRequest().permitAll();
                 })
                 .oauth2Login(oauth2 -> oauth2

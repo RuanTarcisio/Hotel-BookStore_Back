@@ -1,5 +1,7 @@
 package com.rtarcisio.hotelbookstore.storage.services;
 
+import com.rtarcisio.hotelbookstore.shared.exceptions.StorageException;
+import com.rtarcisio.hotelbookstore.storage.dtos.inputs.UploadContext;
 import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
 import com.rtarcisio.hotelbookstore.storage.enums.OwnerType;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,26 @@ public class FileStorageService {
         }
         return storagePath; // Retorna apenas o caminho
     }
+
+    public String storeFile(UploadContext context) {
+        String filename = generateUniqueFilename(context.file().getOriginalFilename());
+        String storagePath = String.format("%s/%s/%s/%s",
+                context.ownerType().name().toLowerCase(),
+                context.ownerId(),
+                context.imageType().name().toLowerCase(),
+                filename
+        );
+
+        Path destination = Paths.get("uploads", storagePath);
+        try {
+            Files.createDirectories(destination.getParent());
+            Files.copy(context.file().getInputStream(), destination);
+            return storagePath;
+        } catch (IOException e) {
+            throw new StorageException("Falha ao salvar arquivo: " + e.getMessage(), e);
+        }
+    }
+
 
     public Resource loadFile(String storagePath) {
         Path filePath = Paths.get("uploads", storagePath);

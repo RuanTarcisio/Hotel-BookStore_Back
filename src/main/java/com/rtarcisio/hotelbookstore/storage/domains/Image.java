@@ -3,7 +3,6 @@ package com.rtarcisio.hotelbookstore.storage.domains;
 import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
 import com.rtarcisio.hotelbookstore.storage.enums.MediaTypeExtension;
 import com.rtarcisio.hotelbookstore.storage.enums.OwnerType;
-import com.rtarcisio.hotelbookstore.shared.enums.ImageExtension;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,6 +37,8 @@ public class Image {
     private String storagePath; // ✅ APENAS caminho/URL
     private LocalDateTime createdAt;
     private String originalFilename;
+
+    private String imgUrl;
 
 
 //    public void setStoragePath() {

@@ -21,10 +21,6 @@ public class User {
     private String userId;
     private String authUserId;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private ImageUser imageUser;
-
     private String profileImageUrl;
     @Column
     private String name;

@@ -2,41 +2,42 @@ package com.rtarcisio.hotelbookstore.user.services;
 
 import com.rtarcisio.hotelbookstore.auth.domains.AuthUser;
 import com.rtarcisio.hotelbookstore.auth.services.AuthUserService;
+import com.rtarcisio.hotelbookstore.shared.clients.ImageClientService;
 import com.rtarcisio.hotelbookstore.shared.dtos.UserDTO;
 import com.rtarcisio.hotelbookstore.shared.events.UserOAuthRegisteredEvent;
 import com.rtarcisio.hotelbookstore.shared.events.UserRegisteredEvent;
 import com.rtarcisio.hotelbookstore.shared.exceptions.DuplicatedTupleException;
-import com.rtarcisio.hotelbookstore.shared.exceptions.ObjetoNaoEncontradoException;
-import com.rtarcisio.hotelbookstore.user.domains.ImageUser;
+import com.rtarcisio.hotelbookstore.shared.utils.SecurityUtils;
+import com.rtarcisio.hotelbookstore.storage.dtos.inputs.ImageResponse;
 import com.rtarcisio.hotelbookstore.user.domains.User;
 import com.rtarcisio.hotelbookstore.user.dtos.inputs.InputCompletedUser;
-import com.rtarcisio.hotelbookstore.user.mappers.ImageUserMapper;
 import com.rtarcisio.hotelbookstore.user.mappers.UserMapper;
-import com.rtarcisio.hotelbookstore.user.repositories.ImageUserRepository;
 import com.rtarcisio.hotelbookstore.user.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-import static com.rtarcisio.hotelbookstore.user.mappers.ImageUserMapper.mapToImage;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserService  {
+public class UserService {
 
     private final UserRepository repository;
-    private final ImageUserRepository imageUserRepository;
     private final AuthUserService authUserService;
     @Value("${app.base-url}")
     private String baseUrl;
+    private final ImageClientService imageClientService;
 
     @Transactional
     public void registerUser(UserRegisteredEvent event) {
-        var possibleUser= repository.existsByCpf(event.getCpf());
+        var possibleUser = repository.existsByCpf(event.getCpf());
 
         if (possibleUser) {
             throw new DuplicatedTupleException("User already registered!");
@@ -49,18 +50,10 @@ public class UserService  {
 //        emailSenderService.enviarEmail(template, "ATIVACAO_DE_CONTA", user.getEmail());
         user = repository.save(user);
 
-        if (event.getPhoto() != null) {
-            user.setImageUser(ImageUserMapper.mapToImage(event.getPhoto()));
-            user.getImageUser().setUser(user);
-            String imageUrl = baseUrl + "/v1/users/profile/" + user.getUserId() + "/photo";
-            user.setProfileImageUrl(imageUrl);
-            repository.save(user);
-        }
-
         authUserService.makeFullyRegistred(user.getAuthUserId());
     }
 
-    public void registerUser(UserOAuthRegisteredEvent event){
+    public void registerUser(UserOAuthRegisteredEvent event) {
         User user = UserMapper.eventToUser(event);
         repository.save(user);
     }
@@ -90,7 +83,7 @@ public class UserService  {
         return null;
     }
 
-//
+    //
 //    public UserDTO updateUser(Long id, InputUserUpdate input) {
 //
 //        User user = getById(id);
@@ -108,28 +101,46 @@ public class UserService  {
 //        return userToDto(repository.save(user));
 //    }
 //
-    @Transactional
-    public ImageUser getImageByUserId(String id) {
-        var user = getUserById(id).orElseThrow(()-> new ObjetoNaoEncontradoException("User not found!"));
-        if(user.getImageUser() == null) {
-            throw new ObjetoNaoEncontradoException("");
-        }
-        return imageUserRepository.findByUser(user).orElse(null);
-    }
 
     public void completeRegistration(AuthUser authUser, @Valid InputCompletedUser input) {
         if (authUser.isEnabled()) {
             throw new RuntimeException("Usuário já possui cadastro completo");
         }
-
         if (existsByCpf(input.cpf())) {
             throw new RuntimeException("CPF já cadastrado");
         }
 
         User user = UserMapper.inputUserCompletedtTouser(authUser.getAuthUserId(), authUser.getEmail(), input);
-        ImageUser image = mapToImage(input.photo());
-
-
         authUserService.makeFullyRegistred(authUser);
     }
+
+    public void uploadUserProfileImage(MultipartFile file, String userId,String token) {
+        // Obter o usuário
+        User user = repository.findByAuthUserId(SecurityUtils.getSubjectOrThrow())
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        try {
+            // Chamar o serviço de upload via WebClient
+            ImageResponse response = imageClientService.uploadImage(
+                    file,
+                    "USER",           // ownerType - deve ser igual ao esperado no Enum
+                    user.getUserId(), // ownerId
+                    "PROFILE",
+                    token);//,        // imageType - deve ser igual ao esperado no Enum
+                    //authUser.getToken() // token de autenticação
+
+
+            // Atualizar o usuário com a URL da imagem
+            user.setProfileImageUrl(response.getUrlImage()); // Usando getImgUrl() do response
+            repository.save(user);
+
+            log.info("Imagem de perfil atualizada para o usuário: {}", user.getUserId());
+
+        } catch (Exception e) {
+            log.error("Falha ao fazer upload da imagem de perfil", e);
+            throw new RuntimeException("Falha no upload da imagem: " + e.getMessage(), e);
+        }
+    }
+
 }
+

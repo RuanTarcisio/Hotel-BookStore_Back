@@ -51,16 +51,16 @@ public class RoomService {
     public RoomDTO save(InputRoom dto) {
         Room room = RoomMapper.inputToRoom(dto);
 
-        if (dto.getRoomImage() != null) {
-            imageService.uploadImage(dto.getRoomImage())
-        }
-
-        room = roomRepository.save(room);
-
-        if (room.getImageRoom() != null) {
-            room.setUrlImage(buildImageRoomUrl(room)); // agora ID existe
-            room = roomRepository.save(room); // update com a URL
-        }
+//        if (dto.getRoomImage() != null) {
+//            imageService.uploadImage(dto.getRoomImage(), authentication)
+//        }
+//
+//        room = roomRepository.save(room);
+//
+//        if (room.getImageRoom() != null) {
+//            room.setUrlImage(buildImageRoomUrl(room)); // agora ID existe
+//            room = roomRepository.save(room); // update com a URL
+//        }
 
         return RoomDTO.fromRoom(room);
     }
@@ -73,13 +73,13 @@ public class RoomService {
     }
 
     private String buildImageRoomUrl(Room room) {
-        if (room.getRoomId() == null || room.getImageRoom() == null || room.getImageRoom().getId() == null) {
-            throw new IllegalStateException("Room or Image not properly initialized");
-        }
+//        if (room.getRoomId() == null || room.getImageRoom() == null || room.getImageRoom().getId() == null) {
+//            throw new IllegalStateException("Room or Image not properly initialized");
+//        }
         return String.format("%s/v1/rooms/%d/photo/%s",
                 apiUrl,
-                room.getRoomId(),
-                room.getImageRoom().getId());
+                room.getRoomId());
+//                room.getImageRoom().getId());
     }
 
 }

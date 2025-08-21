@@ -9,11 +9,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -40,20 +43,30 @@ public class AuthUser implements UserDetails {
 * */
     @OneToMany(mappedBy = "authUser", fetch = FetchType.EAGER)
     private Set<UserConnectedAccount> connectedAccounts = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
     @JsonIgnore
     @Column(unique = true)
     private String codToken;
     private boolean isEnabled = false;
 
     public enum RegistrationStatus {
-        SOCIAL_INCOMPLETE ("INCOMPLETE"),  // Apenas login social
-        COMPLETE ("COMPLETE") ;          // Cadastro completo com todos os dados
+        SOCIAL_INCOMPLETE("INCOMPLETE"),  // Apenas login social
+        COMPLETE("COMPLETE");          // Cadastro completo com todos os dados
 
         private final String value;
+
         RegistrationStatus(String status) {
             value = status;
         }
-        public String getValue() {return value;}
+
+        public String getValue() {
+            return value;
+        }
     }
 
     public void markAsFullyRegistered() {
@@ -61,9 +74,17 @@ public class AuthUser implements UserDetails {
         this.isEnabled = true;
     }
 
+    public boolean hasRole(String role) {
+        return getAuthorities().stream()
+                .anyMatch(grantedAuthority ->
+                        grantedAuthority.getAuthority().equals("ROLE_" + role));
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .toList();
     }
 
     @Override

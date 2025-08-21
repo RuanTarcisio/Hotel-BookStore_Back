@@ -1,4 +1,4 @@
-package com.rtarcisio.hotelbookstore.storage.validations;
+package com.rtarcisio.hotelbookstore.storage.validations.images;
 
 import com.rtarcisio.hotelbookstore.storage.enums.ImageType;
 import com.rtarcisio.hotelbookstore.storage.enums.MediaTypeExtension;
