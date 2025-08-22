@@ -1,0 +1,26 @@
+package com.rtarcisio.hotelbookstore.room_boundary.dtos;
+
+import com.rtarcisio.hotelbookstore.room_boundary.domains.Room;
+
+public record RoomDTO(String roomId,
+                      String title,
+                      String description,
+                      String type,
+                      String urlImage,
+                      int capacity,
+                      Double price,
+                      String size
+) {
+
+    public static RoomDTO fromRoom(Room room) {
+        return new RoomDTO(
+                room.getRoomId(),
+                room.getTitle(),
+                room.getDescription(),
+                room.getType(),
+                room.getUrlImageRoom(),
+                room.getCapacity(),
+                room.getPrice(),
+                room.getSize());
+    }
+}
